@@ -1,4 +1,5 @@
-﻿using DotNetEnv;
+﻿using System.Diagnostics;
+using DotNetEnv;
 
 namespace EmployeeDirectory
 {
@@ -58,7 +59,7 @@ namespace EmployeeDirectory
                     break;
 
                 case "3":
-                    Console.WriteLine("Mod3: Listing all employees");
+                    Console.WriteLine("Mode 3: Listing all employees");
                     var all = repo.GetAll();
                     foreach (var e in all)
                     {
@@ -78,7 +79,24 @@ namespace EmployeeDirectory
                     break;
 
                 case "5":
-                    Console.WriteLine($"Mode {mode} not implemented yet.");
+                    Console.WriteLine("Mode 5: Query male employees with surnames starting 'F'…");
+                    var sw = Stopwatch.StartNew();
+                    var maleFs = repo.GetMaleF();
+                    sw.Stop();
+
+                    foreach (var e in maleFs)
+                    {
+                        var fio = e.MiddleName is null
+                            ? $"{e.LastName} {e.FirstName}"
+                            : $"{e.LastName} {e.FirstName} {e.MiddleName}";
+                        Console.WriteLine(
+                            $"{fio}\t{e.BirthDate:yyyy-MM-dd}\t{e.Gender}\tAge={e.Age}"
+                        );
+                    }
+
+                    Console.WriteLine(
+                        $"Found {maleFs.Count} records in {sw.Elapsed.TotalMilliseconds:N0} ms."
+                    );
                     break;
 
                 default:

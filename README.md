@@ -95,12 +95,37 @@ Copy from the provided `.env.example` and adjust values as needed.
    psql -h localhost -p 5433 -U my_user -d db_test -c "\d employees"
    ```
 
-3. **Run other modes**:
+4. **Run other modes**:
 
    ```bash
    dotnet run -- 2 "Ivanov Petr Sergeevich" 2009-07-12 M
    dotnet run -- 3
    dotnet run -- 4
    ```
+
+---
+
+## Task 5 – Execution Time Report
+
+### Sample Command
+
+```bash
+dotnet run -- 5
+```
+
+### Sample Output
+
+```
+Mode 5: Query male employees with surnames starting 'F'…
+Found 100 employees in 11 ms.
+Fedorov0000010 Ivan Ivanovich	1950-01-11	M	Age=75
+Filippov0214752 Petr Petrovich	2009-01-24	M	Age=16
+...
+Found 100099 records in 686 ms.
+```
+
+### Observed Execution Time
+
+**686 ms** (on local machine: MacBook Air M2 8GB / PostgreSQL 14.15)
 
 ---
