@@ -92,7 +92,7 @@ Copy from the provided `.env.example` and adjust values as needed.
 3. **Inspect the schema (optional)**:
 
    ```bash
-   psql -h localhost -p 5433 -U my_user -d db_test -c "\d employees"
+   psql -h localhost -p 5432 -U user -d db_test -c "\d employees"
    ```
 
 4. **Run other modes**:
@@ -129,3 +129,22 @@ Found 100099 records in 686 ms.
 **686 ms** (on local machine: MacBook Air M2 8GB / PostgreSQL 14.15)
 
 ---
+
+## Task 6 – Index Optimization
+
+**Optimization:** Created a composite index on `(Gender, LastName)` so Postgres can use an index‑range scan for the `WHERE "Gender" = 'M' AND "LastName" LIKE 'F%'` filter.
+
+**Index DDL:**
+
+```sql
+CREATE INDEX "IX_employees_Gender_LastName" ON "employees" ("Gender","LastName");
+```
+
+**Execution Time Comparison:**
+
+* **Before optimization:** 686 ms
+* **After optimization:** 378 ms
+
+**Why it helps:**
+Without the index Postgres performes a full table scan of \~1 000 100 rows. With the composite index, it only scans the relevant subset (gender = M and last names starting with F), reducing Input/Output and speeding up the query
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

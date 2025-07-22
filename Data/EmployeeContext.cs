@@ -47,7 +47,7 @@ namespace EmployeeDirectory
                     })
                     .IsUnique();
 
-                //entity.HasIndex(e => new { e.Gender, e.LastName });
+                entity.HasIndex(e => new { e.Gender, e.LastName });
             });
         }
 
