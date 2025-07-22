@@ -94,4 +94,11 @@ Copy from the provided `.env.example` and adjust values as needed.
    ```bash
    psql -h localhost -p 5433 -U my_user -d db_test -c "\d employees"
    ```
+
+3. **Run other modes**:
+
+   ```bash
+   dotnet run -- 2 "Ivanov Petr Sergeevich" 2009-07-12 M
+   ```
+
 ---

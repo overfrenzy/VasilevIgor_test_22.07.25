@@ -30,5 +30,28 @@ namespace EmployeeDirectory
             using var cmd = new NpgsqlCommand(sql, conn);
             cmd.ExecuteNonQuery();
         }
+
+        public void Insert(Employee e)
+        {
+            const string sql =
+                @"
+                INSERT INTO employees
+                (""LastName"", ""FirstName"", ""MiddleName"", ""BirthDate"", ""Gender"")
+                VALUES
+                (@ln, @fn, @mn, @bd, @g);
+                ";
+
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("ln", e.LastName);
+            cmd.Parameters.AddWithValue("fn", e.FirstName);
+            cmd.Parameters.AddWithValue("mn", (object?)e.MiddleName ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("bd", e.BirthDate);
+            cmd.Parameters.AddWithValue("g", e.Gender.ToString());
+
+            cmd.ExecuteNonQuery();
+        }
     }
 }

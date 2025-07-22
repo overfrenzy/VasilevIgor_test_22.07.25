@@ -1,6 +1,4 @@
-﻿using System;
-using DotNetEnv;
-using Npgsql;
+﻿using DotNetEnv;
 
 namespace EmployeeDirectory
 {
@@ -26,17 +24,47 @@ namespace EmployeeDirectory
                 $"Host={host};Port={port};Username={user};Password={pass};Database={db}";
 
             var mode = args[0];
-            var dbm = new EmployeeRepository(connString);
+            var repo = new EmployeeRepository(connString);
 
             switch (mode)
             {
                 case "1":
                     Console.WriteLine("Mode 1: Creating employees table");
-                    dbm.CreateEmployeeTable();
+                    repo.CreateEmployeeTable();
                     Console.WriteLine("End");
                     break;
 
                 case "2":
+                    if (args.Length != 4)
+                    {
+                        Console.WriteLine(
+                            "Usage: dotnet run -- 2 \"Last First Middle\" YYYY-MM-DD [M|F]"
+                        );
+                        return;
+                    }
+
+                    var nameParts = args[1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (nameParts.Length < 2)
+                    {
+                        Console.WriteLine("Please provide at least LastName and FirstName.");
+                        return;
+                    }
+
+                    var employee = new Employee
+                    {
+                        LastName = nameParts[0],
+                        FirstName = nameParts[1],
+                        MiddleName = nameParts.Length > 2 ? nameParts[2] : null,
+                        BirthDate = DateTime.Parse(args[2]),
+                        Gender = char.ToUpper(args[3][0]),
+                    };
+
+                    repo.Insert(employee);
+                    Console.WriteLine(
+                        $"Inserted: {employee.LastName} {employee.FirstName} (Age: {employee.Age})"
+                    );
+                    break;
+
                 case "3":
                 case "4":
                 case "5":
