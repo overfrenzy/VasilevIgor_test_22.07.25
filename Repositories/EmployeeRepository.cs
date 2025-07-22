@@ -53,5 +53,35 @@ namespace EmployeeDirectory
 
             cmd.ExecuteNonQuery();
         }
+
+        public List<Employee> GetAll()
+        {
+            const string sql =
+                @"
+                SELECT 
+                  ""LastName"", ""FirstName"", ""MiddleName"", ""BirthDate"", ""Gender""
+                FROM ""employees""
+                ORDER BY ""LastName"", ""FirstName"", ""MiddleName"", ""BirthDate"";
+                ";
+            var list = new List<Employee>();
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+            using var cmd = new NpgsqlCommand(sql, conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(
+                    new Employee
+                    {
+                        LastName = reader.GetString(0),
+                        FirstName = reader.GetString(1),
+                        MiddleName = reader.IsDBNull(2) ? null : reader.GetString(2),
+                        BirthDate = reader.GetDateTime(3),
+                        Gender = reader.GetString(4)[0],
+                    }
+                );
+            }
+            return list;
+        }
     }
 }

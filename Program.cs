@@ -66,6 +66,18 @@ namespace EmployeeDirectory
                     break;
 
                 case "3":
+                    Console.WriteLine("Mode 3: Listing all employees");
+                    var all = repo.GetAll();
+                    foreach (var e in all)
+                    {
+                        var fio = e.MiddleName is null
+                            ? $"{e.LastName} {e.FirstName}"
+                            : $"{e.LastName} {e.FirstName} {e.MiddleName}";
+                        Console.WriteLine(
+                            $"{fio}\t{e.BirthDate:yyyy-MM-dd}\t{e.Gender}\tAge={e.Age}"
+                        );
+                    }
+                    break;
                 case "4":
                 case "5":
                     Console.WriteLine($"Mode {mode} not implemented yet.");
