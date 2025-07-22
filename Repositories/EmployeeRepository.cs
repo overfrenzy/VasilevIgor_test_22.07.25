@@ -1,4 +1,5 @@
 using Npgsql;
+using NpgsqlTypes;
 
 namespace EmployeeDirectory
 {
@@ -82,6 +83,35 @@ namespace EmployeeDirectory
                 );
             }
             return list;
+        }
+
+        public void BulkInsert(IEnumerable<Employee> employees)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            // using Npgsql’s binary COPY instead of individual INSERT
+            using var importer = conn.BeginBinaryImport(
+                @"
+                COPY ""employees"" (""LastName"", ""FirstName"", ""MiddleName"", ""BirthDate"", ""Gender"")
+                FROM STDIN (FORMAT BINARY)
+                "
+            );
+
+            foreach (var e in employees)
+            {
+                importer.StartRow();
+                importer.Write(e.LastName, NpgsqlDbType.Text);
+                importer.Write(e.FirstName, NpgsqlDbType.Text);
+                if (e.MiddleName is null)
+                    importer.WriteNull();
+                else
+                    importer.Write(e.MiddleName, NpgsqlDbType.Text);
+                importer.Write(e.BirthDate, NpgsqlDbType.Date);
+                importer.Write(e.Gender.ToString(), NpgsqlDbType.Char);
+            }
+
+            importer.Complete();
         }
     }
 }

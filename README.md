@@ -99,6 +99,8 @@ Copy from the provided `.env.example` and adjust values as needed.
 
    ```bash
    dotnet run -- 2 "Ivanov Petr Sergeevich" 2009-07-12 M
+   dotnet run -- 3
+   dotnet run -- 4
    ```
 
 ---
